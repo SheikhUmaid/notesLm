@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Basic Quiz App</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+  font-family: system-ui, sans-serif;
+  background: #111827;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.quiz-container {
+  width: 350px;
+  background: #1f2933;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+h2 {
+  margin-bottom: 15px;
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.option-btn {
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  background: #374151;
+  color: white;
+  font-size: 16px;
+}
+
+.option-btn:hover:not(.disabled) {
+  background: #2563eb;
+}
+
+.correct {
+  background: #16a34a !important;
+}
+
+.wrong {
+  background: #dc2626 !important;
+}
+
+#next-btn {
+  margin-top: 15px;
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  background: #f59e0b;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  display: none;
+}
+
+.disabled {
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+  </style>
+</head>
+<body>
+
+  <div class="quiz-container">
+    <h2 id="question">Question text</h2>
+
+    <div class="options">
+      <button class="option-btn"></button>
+      <button class="option-btn"></button>
+      <button class="option-btn"></button>
+      <button class="option-btn"></button>
+    </div>
+
+    <button id="next-btn">Next</button>
+
+    <p id="score"></p>
+  </div>
+
+  <script >
+const questions = [
+  {
+    question: "What is the CPU architecture of the ATmega328P?",
+    options: [
+      "ARM Cortex-M",
+      "AVR 8-bit RISC",
+      "PIC 16-bit",
+      "RISC-V 32-bit"
+    ],
+    answer: 1
+  },
+  {
+    question: "How much Flash memory does ATmega328P contain?",
+    options: ["16 KB", "32 KB", "64 KB", "8 KB"],
+    answer: 1
+  },
+  {
+    question: "Which port provides ADC channels?",
+    options: ["PORTB", "PORTC", "PORTD", "PORTE"],
+    answer: 1
+  },
+  {
+    question: "Which communication protocol is NOT available on ATmega328P?",
+    options: ["UART", "SPI", "I2C", "CAN"],
+    answer: 3
+  },
+  {
+    question: "How many timers does ATmega328P include?",
+    options: ["One 16-bit only", "Two 8-bit and one 16-bit", "Three 16-bit", "Only one 8-bit"],
+    answer: 1
+  }
+];
+
+let currentQuestion = 0;
+let score = 0;
+
+const questionEl = document.getElementById("question");
+const optionBtns = document.querySelectorAll(".option-btn");
+const nextBtn = document.getElementById("next-btn");
+const scoreEl = document.getElementById("score");
+
+loadQuestion();
+
+function loadQuestion() {
+  resetState();
+  const q = questions[currentQuestion];
+  questionEl.textContent = q.question;
+
+  optionBtns.forEach((btn, index) => {
+    btn.textContent = q.options[index];
+    btn.onclick = () => selectAnswer(index);
+  });
+}
+
+function selectAnswer(selectedIndex) {
+  const correctIndex = questions[currentQuestion].answer;
+
+  optionBtns.forEach((btn, index) => {
+    btn.classList.add("disabled");
+    if (index === correctIndex) btn.classList.add("correct");
+    if (index === selectedIndex && index !== correctIndex)
+      btn.classList.add("wrong");
+  });
+
+  if (selectedIndex === correctIndex) score++;
+
+  nextBtn.style.display = "block";
+}
+
+function resetState() {
+  nextBtn.style.display = "none";
+  optionBtns.forEach(btn => {
+    btn.className = "option-btn";
+  });
+}
+
+nextBtn.onclick = () => {
+  currentQuestion++;
+  if (currentQuestion < questions.length) {
+    loadQuestion();
+  } else {
+    showResult();
+  }
+};
+
+function showResult() {
+  questionEl.textContent = "Quiz Completed!";
+  document.querySelector(".options").style.display = "none";
+  nextBtn.style.display = "none";
+  scoreEl.textContent = `Your Score: ${score} / ${questions.length}`;
+}
+
+  </script>
+</body>
+</html>

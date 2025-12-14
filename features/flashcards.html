@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Flash Cards App</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 420px;
+      text-align: center;
+    }
+
+    h2 {
+      font-size: 2.5rem;
+      margin-bottom: 2rem;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+      letter-spacing: 1px;
+    }
+
+    .card {
+      perspective: 1000px;
+      margin: 30px 0;
+    }
+
+    .card-inner {
+      width: 100%;
+      height: 280px;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.6s cubic-bezier(0.4, 0.0, 0.2, 1);
+      cursor: pointer;
+    }
+
+    .card.flip .card-inner {
+      transform: rotateY(180deg);
+    }
+
+    .card-front,
+    .card-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 30px;
+      backface-visibility: hidden;
+      font-size: 1.3rem;
+      color: #2d3748;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      font-weight: 500;
+      line-height: 1.6;
+    }
+
+    .card-front {
+      background: linear-gradient(135deg, #ffffff 0%, #f7fafc 100%);
+    }
+
+    .card-back {
+      background: linear-gradient(135deg, #fef5e7 0%, #ffeaa7 100%);
+      transform: rotateY(180deg);
+      color: #1a202c;
+    }
+
+    .card-inner:hover {
+      transform: scale(1.02);
+    }
+
+    .card.flip .card-inner:hover {
+      transform: rotateY(180deg) scale(1.02);
+    }
+
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 30px;
+    }
+
+    button {
+      padding: 14px 28px;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      font-size: 1rem;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    #flipBtn {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      box-shadow: 0 4px 15px rgba(245, 87, 108, 0.4);
+    }
+
+    #flipBtn:hover {
+      box-shadow: 0 6px 20px rgba(245, 87, 108, 0.6);
+    }
+
+    #counter {
+      margin-top: 25px;
+      font-size: 1.1rem;
+      opacity: 0.9;
+      font-weight: 500;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+    }
+
+    @media (max-width: 480px) {
+      h2 {
+        font-size: 2rem;
+      }
+
+      .card-inner {
+        height: 240px;
+      }
+
+      .card-front,
+      .card-back {
+        font-size: 1.1rem;
+        padding: 20px;
+      }
+
+      button {
+        padding: 12px 20px;
+        font-size: 0.9rem;
+      }
+    }
+
+    /* Add subtle animation on load */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .app {
+      animation: fadeIn 0.6s ease-out;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app">
+    <h2>✨ Flash Cards</h2>
+
+    <div class="card" id="card">
+      <div class="card-inner" id="cardInner">
+        <div class="card-front" id="frontText"></div>
+        <div class="card-back" id="backText"></div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button id="prevBtn">← Prev</button>
+      <button id="flipBtn">Flip</button>
+      <button id="nextBtn">Next →</button>
+    </div>
+
+    <p id="counter"></p>
+  </div>
+
+  <script>
+    const flashCards = [
+  {
+    front: "What type of microcontroller is the ATmega328P?",
+    back: "An 8-bit AVR RISC microcontroller." 
+  },
+  {
+    front: "How much Flash, SRAM, and EEPROM does ATmega328P have?",
+    back: "32 KB Flash, 2 KB SRAM, and 1 KB EEPROM." 
+  },
+  {
+    front: "What is the maximum operating frequency of ATmega328P?",
+    back: "20 MHz (typically 16 MHz on Arduino Uno)."
+  },
+  {
+    front: "How many I/O pins does ATmega328P have?",
+    back: "23 programmable I/O pins." 
+  },
+  {
+    front: "Which peripherals are supported by ATmega328P?",
+    back: "USART, SPI, I2C (TWI), ADC, Timers, Watchdog Timer." 
+  },
+  {
+    front: "How many ADC channels are available?",
+    back: "6 ADC channels (10-bit resolution)." 
+  },
+  {
+    front: "What timers does ATmega328P include?",
+    back: "Two 8-bit timers and one 16-bit timer." 
+  },
+  {
+    front: "Which ports handle digital I/O?",
+    back: "PORTB, PORTC, PORTD." 
+  },
+  {
+    front: "What is the function of AVCC?",
+    back: "Power supply for ADC and Port C; should be filtered for analog accuracy." 
+  },
+  {
+    front: "What does the Watchdog Timer do?",
+    back: "Resets the microcontroller if the system freezes." 
+  }
+];
+
+
+    let currentIndex = 0;
+    const card = document.getElementById("card");
+    const frontText = document.getElementById("frontText");
+    const backText = document.getElementById("backText");
+    const counter = document.getElementById("counter");
+
+    document.getElementById("flipBtn").onclick = flipCard;
+    document.getElementById("nextBtn").onclick = nextCard;
+    document.getElementById("prevBtn").onclick = prevCard;
+    card.onclick = flipCard;
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') prevCard();
+      if (e.key === 'ArrowRight') nextCard();
+      if (e.key === ' ' || e.key === 'Enter') {
+        e.preventDefault();
+        flipCard();
+      }
+    });
+
+    loadCard();
+
+    function loadCard() {
+      card.classList.remove("flip");
+      frontText.textContent = flashCards[currentIndex].front;
+      backText.textContent = flashCards[currentIndex].back;
+      counter.textContent = `Card ${currentIndex + 1} of ${flashCards.length}`;
+    }
+
+    function flipCard() {
+      card.classList.toggle("flip");
+    }
+
+    function nextCard() {
+      if (currentIndex < flashCards.length - 1) {
+        currentIndex++;
+        loadCard();
+      }
+    }
+
+    function prevCard() {
+      if (currentIndex > 0) {
+        currentIndex--;
+        loadCard();
+      }
+    }
+  </script>
+</body>
+</html>

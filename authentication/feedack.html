@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>NotesLM | Feedback</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      height: 100vh;
+      background: linear-gradient(135deg, #1d2671, #c33764);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .container {
+      background: #fff;
+      width: 420px;
+      padding: 35px 30px;
+      border-radius: 14px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+      text-align: center;
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 26px;
+      font-weight: 700;
+      color: #1d2671;
+    }
+
+    .brand p {
+      margin: 6px 0 25px;
+      font-size: 14px;
+      color: #666;
+    }
+
+    h2 {
+      font-size: 20px;
+      margin-bottom: 8px;
+      color: #222;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      color: #555;
+      margin-bottom: 25px;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      font-size: 14px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      outline: none;
+      resize: none;
+      transition: border 0.2s;
+    }
+
+    input:focus, textarea:focus {
+      border-color: #1d2671;
+    }
+
+    textarea {
+      min-height: 110px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 15px;
+      background: #1d2671;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    button:hover {
+      background: #151b50;
+    }
+
+    .success {
+      margin-top: 12px;
+      font-size: 14px;
+      color: #2e7d32;
+    }
+
+    .footer-note {
+      margin-top: 22px;
+      font-size: 12px;
+      color: #888;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <div class="brand">
+      <h1>NotesLM</h1>
+      <p>Learning made simple</p>
+    </div>
+
+    <h2>We value your feedback</h2>
+    <div class="subtitle">
+      Tell us what’s working and what can be better.
+    </div>
+
+    <input type="text" id="name" placeholder="Your name (optional)" />
+    <input type="email" id="email" placeholder="Your email (optional)" />
+    <textarea id="feedback" placeholder="Your feedback..."></textarea>
+
+    <button onclick="submitFeedback()">Submit feedback</button>
+
+    <div class="success" id="success"></div>
+
+    <div class="footer-note">
+      © 2025 NotesLM • Built for learners
+    </div>
+
+  </div>
+
+  <script>
+    function submitFeedback() {
+      const feedback = document.getElementById("feedback").value.trim();
+      const success = document.getElementById("success");
+
+      if (!feedback) {
+        success.style.color = "#d32f2f";
+        success.innerText = "Please write some feedback before submitting.";
+        return;
+      }
+
+      success.style.color = "#2e7d32";
+      success.innerText = "Thank you for your feedback! 🙌";
+
+      // Clear form (demo purpose)
+      document.getElementById("name").value = "";
+      document.getElementById("email").value = "";
+      document.getElementById("feedback").value = "";
+    }
+  </script>
+
+</body>
+</html>

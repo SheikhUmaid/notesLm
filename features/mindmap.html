@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flash Card System – Mind Map</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      color: #e5e7eb;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .title {
+      text-align: center;
+      padding: 40px 20px;
+      font-weight: 700;
+      font-size: 2.5rem;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: 0 0 30px rgba(102, 126, 234, 0.3);
+      animation: fadeInDown 0.8s ease-out;
+      letter-spacing: 1px;
+    }
+
+    .mindmap {
+      padding: 30px;
+      display: flex;
+      justify-content: center;
+      animation: fadeIn 1s ease-out 0.3s both;
+    }
+
+    .node {
+      background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+      border-radius: 12px;
+      padding: 16px 24px;
+      min-width: 200px;
+      text-align: center;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+      position: relative;
+      overflow: hidden;
+      font-weight: 600;
+      font-size: 1rem;
+      animation: scaleIn 0.5s ease-out both;
+    }
+
+    .node::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.3), transparent);
+      transition: left 0.5s;
+    }
+
+    .node:hover::before {
+      left: 100%;
+    }
+
+    .node:hover {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      transform: translateY(-4px) scale(1.05);
+      border-color: #667eea;
+      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+    }
+
+    .node.expanded {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      border-color: #f5576c;
+    }
+
+    .node.expanded:hover {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    }
+
+    .children {
+      margin-top: 30px;
+      display: flex;
+      justify-content: center;
+      gap: 25px;
+      flex-wrap: wrap;
+      animation: slideDown 0.5s ease-out;
+    }
+
+    .branch {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .connector {
+      width: 3px;
+      height: 30px;
+      background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+      position: relative;
+      animation: growDown 0.5s ease-out;
+      box-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
+    }
+
+    .connector::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 8px solid #764ba2;
+    }
+
+    /* Expand/Collapse indicator */
+    .node.has-children::after {
+      content: '▼';
+      display: inline-block;
+      margin-left: 8px;
+      font-size: 0.8rem;
+      transition: transform 0.3s ease;
+      opacity: 0.7;
+    }
+
+    .node.has-children.expanded::after {
+      transform: rotate(180deg);
+    }
+
+    /* Animations */
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes scaleIn {
+      from {
+        opacity: 0;
+        transform: scale(0.8);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes growDown {
+      from {
+        height: 0;
+        opacity: 0;
+      }
+      to {
+        height: 30px;
+        opacity: 1;
+      }
+    }
+
+    /* Pulse animation for root node */
+    @keyframes pulse {
+      0%, 100% {
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+      }
+      50% {
+        box-shadow: 0 4px 30px rgba(102, 126, 234, 0.8);
+      }
+    }
+
+    .branch > .node:first-child {
+      animation: scaleIn 0.8s ease-out, pulse 2s ease-in-out infinite 1s;
+      font-size: 1.2rem;
+      min-width: 250px;
+      padding: 20px 30px;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .title {
+        font-size: 1.8rem;
+        padding: 30px 15px;
+      }
+
+      .node {
+        min-width: 160px;
+        padding: 12px 18px;
+        font-size: 0.9rem;
+      }
+
+      .branch > .node:first-child {
+        font-size: 1.1rem;
+        min-width: 200px;
+        padding: 16px 24px;
+      }
+
+      .children {
+        gap: 15px;
+      }
+    }
+
+    /* Stagger animation for children */
+    .children .branch {
+      animation: scaleIn 0.5s ease-out both;
+    }
+
+    .children .branch:nth-child(1) { animation-delay: 0.1s; }
+    .children .branch:nth-child(2) { animation-delay: 0.2s; }
+    .children .branch:nth-child(3) { animation-delay: 0.3s; }
+    .children .branch:nth-child(4) { animation-delay: 0.4s; }
+    .children .branch:nth-child(5) { animation-delay: 0.5s; }
+
+    /* Info text */
+    .info {
+      text-align: center;
+      padding: 20px;
+      opacity: 0.7;
+      font-size: 0.9rem;
+      animation: fadeIn 1s ease-out 1s both;
+    }
+  </style>
+</head>
+<body>
+
+<h1 class="title">🧠 Flash Card System – Mind Map</h1>
+
+<div class="mindmap" id="mindmap"></div>
+
+<p class="info">💡 Click on any node to expand or collapse its children</p>
+
+<script>
+const data = {
+  "title": "ATmega328P Overview",
+  "children": [
+    {
+      "title": "Core Features",
+      "children": [
+        { "title": "8-bit AVR RISC" },
+        { "title": "20 MHz max clock" },
+        { "title": "32 KB Flash / 2 KB SRAM / 1 KB EEPROM" }
+      ]
+    },
+    {
+      "title": "I/O Ports",
+      "children": [
+        { "title": "PORTB (Digital + SPI)" },
+        { "title": "PORTC (ADC + I2C)" },
+        { "title": "PORTD (Digital + UART + Interrupts)" }
+      ]
+    },
+    {
+      "title": "Timers & Counters",
+      "children": [
+        { "title": "8-bit Timer0 & Timer2" },
+        { "title": "16-bit Timer1" },
+        { "title": "PWM Support" }
+      ]
+    },
+    {
+      "title": "Communication Interfaces",
+      "children": [
+        { "title": "USART (RX/TX)" },
+        { "title": "SPI (MOSI/MISO/SCK)" },
+        { "title": "I2C/TWI (SDA/SCL)" }
+      ]
+    },
+    {
+      "title": "Analog Features",
+      "children": [
+        { "title": "10-bit ADC (6 channels)" },
+        { "title": "Analog Comparator" },
+        { "title": "Internal Temperature Sensor" }
+      ]
+    },
+    {
+      "title": "Power & Clock",
+      "children": [
+        { "title": "Sleep Modes" },
+        { "title": "Brown-out Detector" },
+        { "title": "Internal/External Oscillator" }
+      ]
+    },
+    {
+      "title": "Programming & Debug",
+      "children": [
+        { "title": "ISP Support" },
+        { "title": "debugWIRE" },
+        { "title": "Bootloader Support" }
+      ]
+    }
+  ]
+}
+;
+
+function createNode(nodeData, depth = 0) {
+  const branch = document.createElement("div");
+  branch.className = "branch";
+
+  const node = document.createElement("div");
+  node.className = "node";
+  node.textContent = nodeData.title;
+
+  // Add delay based on depth for stagger effect
+  node.style.animationDelay = `${depth * 0.1}s`;
+
+  branch.appendChild(node);
+
+  if (nodeData.children && nodeData.children.length) {
+    node.classList.add("has-children");
+
+    const connector = document.createElement("div");
+    connector.className = "connector hidden";
+    branch.appendChild(connector);
+
+    const childrenContainer = document.createElement("div");
+    childrenContainer.className = "children hidden";
+
+    nodeData.children.forEach(child => {
+      childrenContainer.appendChild(createNode(child, depth + 1));
+    });
+
+    branch.appendChild(childrenContainer);
+
+    node.onclick = (e) => {
+      e.stopPropagation();
+      const isExpanded = !childrenContainer.classList.contains("hidden");
+      
+      if (isExpanded) {
+        childrenContainer.classList.add("hidden");
+        connector.classList.add("hidden");
+        node.classList.remove("expanded");
+      } else {
+        childrenContainer.classList.remove("hidden");
+        connector.classList.remove("hidden");
+        node.classList.add("expanded");
+      }
+    };
+  }
+
+  return branch;
+}
+
+document.getElementById("mindmap").appendChild(createNode(data));
+</script>
+</body>
+</html>

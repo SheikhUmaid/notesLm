@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>NotesLM | Learning Made Simple</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      height: 100vh;
+      background: linear-gradient(135deg, #1d2671, #c33764);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .container {
+      background: #ffffff;
+      width: 360px;
+      padding: 35px 30px;
+      border-radius: 14px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+      text-align: center;
+    }
+
+    .brand {
+      margin-bottom: 25px;
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 26px;
+      font-weight: 700;
+      color: #1d2671;
+    }
+
+    .brand p {
+      margin: 4px 0 0;
+      font-size: 14px;
+      color: #666;
+    }
+
+    h2 {
+      font-size: 20px;
+      margin-bottom: 18px;
+      color: #222;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      font-size: 14px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      outline: none;
+      transition: border 0.2s;
+    }
+
+    input:focus {
+      border-color: #1d2671;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 15px;
+      background: #1d2671;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    button:hover {
+      background: #151b50;
+    }
+
+    .toggle {
+      margin-top: 18px;
+      font-size: 14px;
+      color: #555;
+      cursor: pointer;
+    }
+
+    .toggle span {
+      color: #1d2671;
+      font-weight: 600;
+    }
+
+    .error {
+      margin-top: 12px;
+      font-size: 13px;
+      color: #d32f2f;
+    }
+
+    .footer-note {
+      margin-top: 22px;
+      font-size: 12px;
+      color: #888;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <div class="brand">
+      <h1>NotesLM</h1>
+      <p>Learning made simple</p>
+    </div>
+
+    <h2 id="form-title">Login to your account</h2>
+
+    <input type="text" id="username" placeholder="Username" />
+    <input type="password" id="password" placeholder="Password" />
+
+    <button onclick="handleAuth()">Continue</button>
+
+    <div class="toggle" onclick="toggleForm()">
+      Switch to <span id="toggle-text">Signup</span>
+    </div>
+
+    <div class="error" id="error"></div>
+
+    <div class="footer-note">
+      © 2025 NotesLM • Built for learners
+    </div>
+
+  </div>
+
+  <script>
+    let isLogin = true;
+
+    function toggleForm() {
+      isLogin = !isLogin;
+
+      document.getElementById("form-title").innerText =
+        isLogin ? "Login to your account" : "Create a new account";
+
+      document.getElementById("toggle-text").innerText =
+        isLogin ? "Signup" : "Login";
+
+      document.getElementById("error").innerText = "";
+    }
+
+    function handleAuth() {
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value.trim();
+      const error = document.getElementById("error");
+
+      if (username === "admin" && password === "admin") {
+        window.location.href = "https://10.94.145.5:3000/";
+      } else {
+        error.innerText = "Incorrect username or password";
+      }
+    }
+  </script>
+
+</body>
+</html>
